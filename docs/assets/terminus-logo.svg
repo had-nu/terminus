@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="24" fill="#0b0e12"/>
+  <text x="100" y="130" font-family="ui-monospace,monospace" font-size="80" font-weight="700" fill="#59c27b" text-anchor="middle">></text>
+  <text x="100" y="180" font-family="ui-monospace,monospace" font-size="14" fill="#5d6b7a" text-anchor="middle">TERMINUS</text>
+</svg>
