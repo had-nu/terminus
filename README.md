@@ -147,7 +147,7 @@ cat recipes/web-security.yaml
 | Requisito | Mínimo |
 |-----------|--------|
 | Browser | Firefox 108+, Chrome 108+, Safari 16.4+, Edge 108+ |
-| WASM | ✅ (todos os browsers modernos) |
+| WASM | Sim (todos os browsers modernos) |
 | SharedArrayBuffer | ❌ **não necessário** (v86 não usa) |
 | COOP/COEP headers | ❌ **não necessário** |
 | Memória RAM | ~300 MB livres (256 MB guest + overhead) |
@@ -211,8 +211,8 @@ terminus/
 
 | Fase | Entregável | Estado |
 |------|------------|--------|
-| **P0** | Runtime feasibility — v86 → Alpine → shell em worker | ✅ Done |
-| **P1** | Terminal — React + xterm.js + stdin/stdout bridge | 🔜 Próximo |
+| **P0** | Runtime feasibility — v86 → Alpine → shell em worker | Done |
+| **P1** | Terminal — React + xterm.js + stdin/stdout bridge | Proximo |
 | **P2** | Filesystem — base imutável + overlay CoW + reset | Planeado |
 | **P3** | Package management — `apk` via mirror/local repo | Planeado |
 | **P4** | File transfer — upload/download | Planeado |
