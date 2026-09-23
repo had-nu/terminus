@@ -1,0 +1,13 @@
+name: web-security
+
+base: alpine:3.22
+
+packages:
+  - curl
+  - wget
+  - nmap
+  - nikto
+  - sqlmap
+  - gobuster
+  - ffuf
+  - sslscan

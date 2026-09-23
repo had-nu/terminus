@@ -1,0 +1,11 @@
+name: network-research
+
+base: alpine:3.22
+
+packages:
+  - curl
+  - wget
+  - jq
+  - dig
+  - traceroute
+  - tcpdump

@@ -1,0 +1,11 @@
+name: digital-forensics
+
+base: alpine:3.22
+
+packages:
+  - file
+  - binutils
+  - tcpdump
+  - foremost
+  - testdisk
+  - sleuthkit
