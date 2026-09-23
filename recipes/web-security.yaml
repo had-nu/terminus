@@ -11,3 +11,11 @@ packages:
   - gobuster
   - ffuf
   - sslscan
+
+go_tools:
+  - name: vexil
+    repo: github.com/had-nu/vexil/v2/cmd/vexil
+    desc: Static secret scanner for CI/CD pipelines (entropy-gated, zero deps)
+  - name: wardex
+    repo: github.com/had-nu/wardex/v2
+    desc: Risk-based release gate for threat-informed intelligence strategies
