@@ -1,0 +1,20 @@
+{
+  "name": "terminus",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Disposable Alpine Linux environments in the browser (SPEC.md)",
+  "workspaces": [
+    "apps/web",
+    "packages/terminal",
+    "packages/protocol",
+    "packages/session"
+  ],
+  "scripts": {
+    "build:rootfs": "bash scripts/build-rootfs.sh",
+    "build:runtime": "bash scripts/build-runtime.sh",
+    "build:p0": "npm run build:rootfs && npm run build:runtime",
+    "dev": "bash scripts/dev.sh",
+    "test:p0": "node /tmp/opencode/p0test/collect-evidence.js /tmp/opencode/p0-evidence.png"
+  },
+  "license": "SEE LICENSE"
+}

@@ -1,0 +1,12 @@
+name: linux-fundamentals
+
+base: alpine:3.22
+
+packages:
+  - vim
+  - less
+  - tree
+  - procps
+  - findutils
+  - grep
+  - tar

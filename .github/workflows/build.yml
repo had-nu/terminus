@@ -1,0 +1,27 @@
+name: build
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build rootfs + runtime (sha256-verified pins, SPEC §10.5)
+        run: |
+          npm run build:rootfs
+          npm run build:runtime
+
+      - name: Smoke test — initramfs is a valid newc cpio with an init script
+        run: |
+          gzip -dc runtime/alpine/out/initramfs-p0.cpio.gz | cpio -it | grep -qE '(^|\s)init$'
+          test -s runtime/alpine/out/vmlinuz-lts
+          test -s runtime/wasm/v86.wasm

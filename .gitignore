@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+apps/web/dist/
+coverage/
+
+# Runtime artifacts (rebuilt reproducibly by scripts/ — SPEC §10.5)
+runtime/alpine/out/
+runtime/alpine/rootfs/
+runtime/alpine/bios/
+runtime/wasm/libv86.js
+runtime/wasm/libv86.mjs
+runtime/wasm/v86.wasm
+runtime/wasm/v86.d.ts
+runtime/wasm/LICENSE.v86
+
+# Test evidence / local tools
+/tmp/
+*.log
+.DS_Store

@@ -1,0 +1,9 @@
+{
+  "name": "@terminus/session",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Session lifecycle (create/destroy/expire) — SPEC §4, §5.3",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {}
+}
