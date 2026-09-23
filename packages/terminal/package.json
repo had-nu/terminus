@@ -1,0 +1,9 @@
+{
+  "name": "@terminus/terminal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Terminal UI adapter (P1: React + xterm.js) — SPEC §5 terminal",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {}
+}
