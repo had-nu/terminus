@@ -38,6 +38,7 @@ scripts/         build-rootfs.sh · build-runtime.sh · dev.sh
 
 ## License
 
-Pending decision (see [SPEC.md](SPEC.md) open questions). Binaries vendored:
+**AGPL-3.0** (see [LICENSE](LICENSE); recorded as decision D-007 in
+[SPEC.md](SPEC.md)). Binaries vendored under their own licenses:
 v86 © copy.sh, BSD-2-Clause (`runtime/wasm/LICENSE.v86`);
 Alpine Linux © Alpine contributors, GPL-2.0 (kernel) / MIT-ish (userland).
