@@ -118,7 +118,7 @@ The main thread owns presentation and user interaction. The Web Worker owns the 
 | Session controller | Owns lifecycle NEW → DESTROYED (§4.3); spawns/terminates worker | TypeScript (`packages/session`) | Single owner of session state |
 | Runtime worker | Hosts execution engine, guest filesystem, processes | Web Worker | Isolation boundary for untrusted code (§7.1) |
 | Linux userspace | Shell, core utilities, `apk` | Alpine Linux (version-pinned) | Base image immutable (§4.2) |
-| Execution engine | Emulates CPU/filesystem for the userspace | WASM runtime — TBD | Decided by spike P0 (D-001) |
+| Execution engine | Emulates CPU/filesystem for the userspace | **v86** (32-bit x86 → WASM JIT), pinned in `runtime/wasm` | Decided by spike P0 (D-001); Alpine **x86** port (OQ-003) |
 | Virtual filesystem | Immutable base + writable session overlay | In-memory / OPFS-backed | Copy-on-write preferred (§4.2, OQ-005) |
 | Protocol | Typed messages main thread ↔ worker | `postMessage` / `MessageChannel` (`packages/protocol`) | Defined in §5.1 |
 | Terminal package | xterm wiring, fit/resize, input flow control | TypeScript (`packages/terminal`) | Shared UI glue |
@@ -137,7 +137,7 @@ The main thread owns presentation and user interaction. The Web Worker owns the 
 | React / TypeScript / Vite | Pinned via lockfile | UI and build | Build breaks; already-deployed app shell keeps working via cache |
 | xterm.js | Pinned via lockfile | Terminal rendering | No terminal UI |
 | Alpine base image | Pinned 3.x + published hash | Userspace | Sessions cannot start; mitigated by CI-built, integrity-verified artifacts (§7.1) |
-| WASM runtime (v86 or container2wasm) | TBD | Execution engine | P0 blocker until decided (D-001) |
+| WASM runtime | **v86** (npm `0.5.462`, BSD-2-Clause), vendored + sha-verified | Execution engine | P0 blocker resolved at D-001; artifact vendored in repo (`runtime/wasm`), still needs CI-side verification (§10.5) |
 | First-party Alpine package mirror | Pinned APKINDEX + package hashes | `apk` package installation (D-004) | Package install unavailable; shell still works |
 | Static hosting (GitHub Pages or Cloudflare Pages) | n/a | Delivery | Site unreachable; no backend state to lose (§8.4) |
 
@@ -335,14 +335,16 @@ The terminal is the product. Additional UI MUST NOT turn the application into a 
 
 ### 6.1 Targets
 
-> Indicative values pending OQ-004; refine after spike P0 measures the chosen runtime.
+> Refined with spike P0 measurements (2026-09-23, `docs/benchmarks.md`).
+> Targets marked ⚠ were NOT met by the measured run and are re-baselined
+> honestly (SPEC §6.2) before P1.
 
 | Metric | Target | Boundary Condition |
 |--------|--------|--------------------|
-| Initial payload (app + runtime + base image, cold cache) | ≤ 25 MB compressed | Broadband, first visit, empty HTTP cache |
+| Initial payload (app + runtime + base image, cold cache) | ≤ 25 MB compressed | Broadband, first visit, empty HTTP cache — **measured 13.7 MiB ✓** |
 | Repeat load (warm cache) | ≤ 5 MB | App shell only; base image served from HTTP cache |
-| Time to interactive prompt (cold) | ≤ 10 s | Includes image fetch + runtime init |
-| Time to interactive prompt (warm) | ≤ 3 s | Cached assets |
+| Time to interactive prompt (cold) | ⚠ ≤ 10 s → **re-baselined ≈ 35 s** | Includes image fetch + runtime init — measured ≈31 s in software emulation |
+| Time to interactive prompt (warm) | ⚠ ≤ 3 s → **re-baselined ≈ 8 s** | Cached assets |
 | Keystroke → echo latency | ≤ 50 ms p95 | Local execution; main thread not blocked |
 | Guest RAM | 256 MB default, 512 MB hard cap | Worker + WASM memory |
 | Writable overlay size | ≤ 512 MB | Exhaustion surfaces ENOSPC, not a crash (§8.4) |
@@ -352,8 +354,11 @@ The terminal is the product. Additional UI MUST NOT turn the application into a 
 
 ### 6.2 Bottlenecks & Limits
 
-- **Emulation throughput** (pending D-001): heavy compilation will be slow. Acceptable per §1.4, but MUST be documented honestly rather than hidden.
-- **Cold-start image fetch** (OQ-004): mitigations are compression, HTTP caching, and lazy package fetch (P3).
+- **Emulation throughput** (measured, D-001): heavy compilation is slow — cold
+  boot ≈31 s in software emulation (v86). Acceptable per §1.4, documented
+  honestly in `docs/benchmarks.md`.
+- **Cold-start image fetch** (OQ-004): mitigations are compression, HTTP
+  caching, and lazy package fetch (P3).
 - **Browser memory:** 32-bit WASM memory and browser tab budgets apply; OOM follows §8.4 — clear messaging, no false impression of persistence.
 - **No kernel guarantees:** arbitrary Linux kernel features are out of scope (§2.2).
 - **Network egress:** restricted to first-party static assets (§7.1); no raw sockets, no unrestricted outbound connections.
@@ -472,7 +477,7 @@ The MVP is successful when TC-01 … TC-12 are all green.
 
 | Phase | Deliverable | Success Criteria | Target Date |
 |-------|------------|------------------|-------------|
-| **P0 — Runtime feasibility** | Comparative spike: v86 vs container2wasm (D-001) | `browser → runtime → Alpine → /bin/sh` in a Web Worker | TBD |
+| **P0 — Runtime feasibility** ✅ done | Comparative spike: v86 vs container2wasm (D-001) | `browser → runtime → Alpine → /bin/sh` in a Web Worker — **met (v86)**; evidence in `docs/spike-p0.md` + `docs/benchmarks.md` | 2026-09-23 |
 | **P1 — Terminal** | React, xterm.js, Web Worker, stdin/stdout bridge | `/ # echo hello` → `hello` | TBD |
 | **P2 — Filesystem** | Immutable base, writable overlay, session reset | TC-10 passes: destroy → next session clean | TBD |
 | **P3 — Package management** | Feasible model for `apk`, repositories, network (OQ-002) | TC-05 passes under restricted egress | TBD |
@@ -508,14 +513,15 @@ The MVP is successful when TC-01 … TC-12 are all green.
 | D-003 | Initial recipe set = the six listed in §5.2; repository tree aligned | v0.1 listed 4 recipes in §7 and 6 in §12 | 2026-09-23 | Accepted |
 | D-004 | Package distribution via a first-party static mirror (same origin) or a local `file://` repository; no open egress for `apk` | Reconciles Goal 3 (`apk`) with the network restriction in §7.1 | 2026-09-23 | Proposed (confirm at P3 / OQ-002) |
 | D-005 | MVP MUST NOT require a backend, and the product MUST truthfully disclose local vs remote execution | Core promise (§1.2) and privacy model (§7.2) | 2026-09-23 | Accepted |
+| **D-006** | **Runtime = v86** (32-bit x86 → WASM); Alpine **x86** port (`alpine-minirootfs-3.22.6-x86` + `vmlinuz-lts`); classic Web Worker + serial bridge (`console=ttyS0`) | Comparative spike P0 proved `browser → runtime → Alpine → /bin/sh` in a worker on v86 (boot ≈31 s, payload 13.7 MiB, zero errors — `docs/spike-p0.md`); c2w v0.8.4 blocked by upstream defects + 30-min build timeout without an artifact | 2026-09-23 | Accepted (supersedes D-001 deferral) |
 
 ---
 
 ## 13. Open Questions
 
-- [ ] **OQ-001** — Runtime choice: v86 vs container2wasm/qemu-wasm. Resolved by spike P0.
+- [x] **OQ-001** — Runtime choice: **v86**, resolved by spike P0 (D-006; `docs/spike-p0.md`). c2w v0.8.4 rejected: upstream release-pipeline defects + timeboxed build exceeded without artifact.
 - [ ] **OQ-002** — `apk` distribution model: static first-party mirror vs local `file://` repository vs disabled. Resolved at P3.
-- [ ] **OQ-003** — Browser support matrix and whether the chosen runtime requires SharedArrayBuffer (COOP/COEP headers). Resolved after D-001.
+- [x] **OQ-003** — Runtime portability: v86 emulates **32-bit x86 only** → Alpine `x86` (i686) is the base port; x86_64 userspace out of scope until a 64-bit engine is viable. Remaining matrix (Safari, SharedArrayBuffer/COOP-COEP) still open at P1.
 - [ ] **OQ-004** — Final numbers for the §6.1 budgets (payload, boot time, RAM, overlay size, idle timeout).
 - [ ] **OQ-005** — Upload/session storage: in-memory filesystem vs OPFS-backed overlay.
 
@@ -528,7 +534,7 @@ The MVP is successful when TC-01 … TC-12 are all green.
 - **Session** — The disposable lifecycle unit (§4.1): one worker + one runtime + one overlay.
 - **Base image** — Immutable, version-pinned, integrity-verified Alpine rootfs artifact.
 - **Overlay** — Per-session writable copy-on-write layer over the base (§4.2).
-- **Runtime** — WASM execution engine hosting the Linux userspace; technology pending D-001.
+- **Runtime** — WASM execution engine hosting the Linux userspace; **v86** (D-006).
 - **Recipe** — Declarative, version-controlled environment preset (`base` + `packages`, §5.2).
 - **`environment.yaml`** — Manifest exported from a running session; same schema as a recipe.
 - **Ephemeral / controlled ephemerality** — No state survives `destroy()`; the defining property of the product (§2.2).
@@ -537,7 +543,7 @@ The MVP is successful when TC-01 … TC-12 are all green.
 ### B. References
 
 - v86 — x86 emulator in WebAssembly — <https://github.com/copy/v86>
-- container2wasm — Container images compiled to WASM — <https://github.com/ktock/container2wasm>
+- container2wasm — Container images compiled to WASM — <https://github.com/container2wasm/container2wasm>
 - qemu-wasm — QEMU compiled to WASM/WASI — <https://github.com/ktock/qemu-wasm>
 - WebVM / CheerpX — Prior art (commercial base) — <https://webvm.io>
 - WebContainers — Prior art (Node-style userspace, not Linux) — <https://webcontainers.io>
