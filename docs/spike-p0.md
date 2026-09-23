@@ -159,8 +159,8 @@ convert `alpine:3.22` out of the box.
 ```bash
 bash scripts/build-rootfs.sh   # fetch + sha256-verify + assemble initramfs
 bash scripts/build-runtime.sh  # vendor v86 runtime + BIOS (npm pack, pinned)
-bash scripts/dev.sh 8000       # static host
-# open http://127.0.0.1:8000/apps/web/index.html
+bash scripts/dev.sh 5173       # static host
+# open http://127.0.0.1:5173/apps/web/index.html
 # headless evidence: /tmp/opencode/p0test/collect-evidence.js (Playwright)
 ```
 

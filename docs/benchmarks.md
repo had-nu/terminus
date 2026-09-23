@@ -33,6 +33,6 @@ time, tens of GB of layer cache); the expected browser payload is the emulator
 
 ```bash
 bash scripts/build-rootfs.sh && bash scripts/build-runtime.sh
-bash scripts/dev.sh 8000           # then open /apps/web/index.html
+bash scripts/dev.sh 5173           # then open /apps/web/index.html
 # P0 harness: /tmp/opencode/p0test/collect-evidence.js (headless Chromium)
 ```

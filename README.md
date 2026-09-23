@@ -53,13 +53,13 @@ O TERMINUS dá-te um **ambiente Linux completo no browser** — kernel Alpine 3.
 git clone https://github.com/had-nu/terminus.git
 cd terminus
 npm run build:p0          # fetch + verify + initramfs + vendor v86 (~30s)
-npm run dev               # servidor estático em http://localhost:8000
+npm run dev               # servidor estático em http://localhost:5173
 ```
 
 ### 2. Abre no browser
 
 ```
-http://localhost:8000/apps/web/index.html
+http://localhost:5173/apps/web/index.html
 ```
 
 Vês o kernel a fazer boot (~30s primeira vez, ~8s com cache), aparece o prompt:
@@ -164,7 +164,7 @@ cat recipes/web-security.yaml
 | `npm run build:p0` | Constrói tudo: rootfs + initramfs + vendor v86 (pins sha256) |
 | `npm run build:rootfs` | Só rootfs/initramfs (fetch Alpine + assemble) |
 | `npm run build:runtime` | Só vendor v86 + BIOS (npm pack, verifica hash) |
-| `npm run dev` | Servidor estático em `http://localhost:8000` |
+| `npm run dev` | Servidor estático em `http://localhost:5173` |
 | `npm run test:p0` | Headless test (Playwright + Chromium) — evidência de boot |
 
 Os scripts de build são **reprodutíveis**:

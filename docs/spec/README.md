@@ -65,7 +65,7 @@ Cada receita = `environment.yaml` declarativo (base image + lista de pacotes `ap
 | Métrica | Valor | Target §6.1 |
 |---------|-------|-------------|
 | Payload cold cache | **13.7 MiB** | ≤ 25 MiB ✓ |
-| Boot cold → prompt | **≈ 31 s** | ⚠ re-baselined (era 10 s) |
+| Boot cold → prompt | **≈ 31 s** | re-baselined (era 10 s) |
 | Guest RAM | 256 MiB | 256 MiB ✓ |
 | Erros durante boot | 0 | — |
 
@@ -84,7 +84,7 @@ npm run build:p0
 
 # 3) Servidor estático
 npm run dev
-# → abre http://localhost:8000/apps/web/index.html
+# → abre http://localhost:5173/apps/web/index.html
 ```
 
 Os scripts (`scripts/build-rootfs.sh`, `scripts/build-runtime.sh`) são **reprodutíveis**: pins com sha256, falham se o hash não bater.
@@ -101,7 +101,7 @@ Ver [App. C da spec](../SPEC.md#c-target-repository-structure) ou `docs/architec
 
 | Fase | Entregável | Estado |
 |------|------------|--------|
-| **P0** | Runtime feasibility (v86 → Alpine → shell) | ✅ done |
+| **P0** | Runtime feasibility (v86 → Alpine → shell) | done |
 | **P1** | Terminal (React + xterm.js + worker stdin/stdout) | próximo |
 | **P2** | Filesystem (base imutável + overlay CoW + reset) | planeado |
 | **P3** | Package management (`apk` via mirror/local repo) | planeado |
