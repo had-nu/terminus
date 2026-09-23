@@ -4,6 +4,8 @@ Disposable **Alpine Linux** environments in the browser — ephemeral, client-si
 no account, no backend. Point a browser at the page, get a root shell, close the
 tab and everything is gone (SPEC §1, §2).
 
+> **Nothing to install. Nothing to maintain. Nothing to clean up.**
+
 > **Status: P0 spike** — runtime feasibility proven with **v86**:
 > `browser → runtime → Alpine → /bin/sh` inside a Web Worker.
 > Details: [docs/spike-p0.md](docs/spike-p0.md). The spec:
