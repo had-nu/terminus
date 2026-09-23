@@ -47,13 +47,33 @@ O TERMINUS dá-te um **ambiente Linux completo no browser** — kernel Alpine 3.
 
 ## Quickstart
 
-### 1. Clona e constrói (artefactos reprodutíveis, pins sha256)
+### Opção A: Um comando (sem clone, sem npm)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/had-nu/terminus/main/terminus.sh | bash -s install
+```
+
+Abre `http://localhost:5173/apps/web/index.html` no browser.
+
+---
+
+### Opção B: Clone + script único
 
 ```bash
 git clone https://github.com/had-nu/terminus.git
 cd terminus
-npm run build:p0          # fetch + verify + initramfs + vendor v86 (~30s)
-npm run dev               # servidor estático em http://localhost:5173
+./terminus.sh              # build (se necessário) + dev server
+```
+
+### Opção C: Comando a comando
+
+```bash
+git clone https://github.com/had-nu/terminus.git
+cd terminus
+./terminus.sh build        # constrói runtime + rootfs (reprodutível, sha256)
+./terminus.sh dev          # servidor em http://localhost:5173
+./terminus.sh test         # corre testes de prompt (22 testes)
+./terminus.sh clean        # remove artefactos
 ```
 
 ### 2. Abre no browser
@@ -161,16 +181,22 @@ cat recipes/web-security.yaml
 
 | Comando | O que faz |
 |---------|-----------|
-| `npm run build:p0` | Constrói tudo: rootfs + initramfs + vendor v86 (pins sha256) |
+| `./terminus.sh` | Build se necessário + dev server (default) |
+| `./terminus.sh build` | Constrói tudo: rootfs + initramfs + vendor v86 (pins sha256) |
+| `./terminus.sh dev` | Servidor estático em `http://localhost:5173` |
+| `./terminus.sh test` | Corre testes de prompt (Playwright + Chromium) |
+| `./terminus.sh clean` | Remove artefactos de build |
+| `./terminus.sh install` | Baixa do GitHub, builda, e roda (sem clone) |
+| `npm run build:p0` | Constrói tudo via npm (rootfs + runtime) |
 | `npm run build:rootfs` | Só rootfs/initramfs (fetch Alpine + assemble) |
 | `npm run build:runtime` | Só vendor v86 + BIOS (npm pack, verifica hash) |
-| `npm run dev` | Servidor estático em `http://localhost:5173` |
+| `npm run dev` | Servidor estático via Python (legacy) |
 | `npm run test:p0` | Headless test (Playwright + Chromium) — evidência de boot |
 
 Os scripts de build são **reprodutíveis**:
 - Pins de versão + sha256 no topo de cada script
 - Falham se o hash não bater (supply-chain protection)
-- Artefactos gerados em `runtime/` (gitignored — reconstrói com `npm run build:p0`)
+- Artefactos gerados em `runtime/` (gitignored — reconstrói com `./terminus.sh build`)
 
 ---
 
@@ -178,31 +204,33 @@ Os scripts de build são **reprodutíveis**:
 
 ```
 terminus/
-├── apps/web/              # P0: vanilla spike (index.html + worker); P1: React + xterm.js
+├── terminus.sh              # 🚀 Launcher único (build, dev, test, install)
+├── apps/web/                # P0: vanilla spike (index.html + worker); P1: React + xterm.js
 ├── runtime/
-│   ├── alpine/            # Kernel, initramfs, rootfs, BIOS (reconstruídos pelos scripts)
-│   ├── wasm/              # v86 runtime (vendored, pinned)
-│   └── filesystem/        # P2: base imutável + overlay CoW
+│   ├── alpine/              # Kernel, initramfs, rootfs, BIOS (reconstruídos pelos scripts)
+│   ├── wasm/                # v86 runtime (vendored, pinned)
+│   └── filesystem/          # P2: base imutável + overlay CoW
 ├── packages/
-│   ├── protocol/          # Mensagens tipadas main↔worker
-│   ├── session/           # Lifecycle NEW → DESTROYED
-│   └── terminal/          # xterm wiring (P1)
-├── recipes/               # 6 environment.yaml declarativos (D-003)
+│   ├── protocol/            # Mensagens tipadas main↔worker
+│   ├── session/             # Lifecycle NEW → DESTROYED
+│   └── terminal/            # xterm wiring (P1)
+├── recipes/                 # 6 environment.yaml declarativos (D-003)
 ├── docs/
-│   ├── spec/README.md     # Spec amigável (este ficheiro em formato legível)
-│   ├── SPEC.md            # Spec técnica completa (local, gitignored)
-│   ├── architecture.md    # Arquitectura P0
-│   ├── benchmarks.md      # Métricas medidas
-│   ├── reproducibility.md # Pins, scripts, verificação
-│   ├── spike-p0.md        # Relatório do spike comparativo (v86 vs c2w)
-│   └── evidence/          # JSON + screenshot do boot P0
+│   ├── spec/README.md       # Spec amigável (este ficheiro em formato legível)
+│   ├── SPEC.md              # Spec técnica completa (local, gitignored)
+│   ├── architecture.md      # Arquitectura P0
+│   ├── benchmarks.md        # Métricas medidas
+│   ├── reproducibility.md   # Pins, scripts, como verificar
+│   ├── spike-p0.md          # Relatório do spike comparativo (v86 vs c2w)
+│   └── evidence/            # JSON + screenshot do boot P0
 ├── scripts/
-│   ├── build-rootfs.sh    # Fetch Alpine + verify + initramfs
-│   ├── build-runtime.sh   # Vendor v86 + BIOS
-│   └── dev.sh             # Servidor estático
-├── .github/workflows/     # CI: build + smoke test
-├── LICENSE                # AGPL-3.0
-└── package.json           # Workspaces + scripts
+│   ├── build-rootfs.sh      # Fetch Alpine + verify + initramfs
+│   ├── build-runtime.sh     # Vendor v86 + BIOS
+│   └── dev.sh               # Servidor estático (legacy)
+├── .github/workflows/       # CI: build + smoke test
+├── LICENSE                  # AGPL-3.0
+├── package.json             # Workspaces + scripts
+└── prompt-tests.js          # Testes automatizados de prompt (22 testes)
 ```
 
 ---
