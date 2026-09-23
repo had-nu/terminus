@@ -514,6 +514,7 @@ The MVP is successful when TC-01 … TC-12 are all green.
 | D-004 | Package distribution via a first-party static mirror (same origin) or a local `file://` repository; no open egress for `apk` | Reconciles Goal 3 (`apk`) with the network restriction in §7.1 | 2026-09-23 | Proposed (confirm at P3 / OQ-002) |
 | D-005 | MVP MUST NOT require a backend, and the product MUST truthfully disclose local vs remote execution | Core promise (§1.2) and privacy model (§7.2) | 2026-09-23 | Accepted |
 | **D-006** | **Runtime = v86** (32-bit x86 → WASM); Alpine **x86** port (`alpine-minirootfs-3.22.6-x86` + `vmlinuz-lts`); classic Web Worker + serial bridge (`console=ttyS0`) | Comparative spike P0 proved `browser → runtime → Alpine → /bin/sh` in a worker on v86 (boot ≈31 s, payload 13.7 MiB, zero errors — `docs/spike-p0.md`); c2w v0.8.4 blocked by upstream defects + 30-min build timeout without an artifact | 2026-09-23 | Accepted (supersedes D-001 deferral) |
+| **D-007** | Project license = **AGPL-3.0** (`LICENSE`, `package.json`, README) | Open-source, copyleft, network-use clause matches a software-as-a-service-style web product; vendored binaries keep their own licenses (v86 BSD-2-Clause, Alpine kernel GPL-2.0) | 2026-09-23 | Accepted |
 
 ---
 
