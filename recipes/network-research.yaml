@@ -9,3 +9,8 @@ packages:
   - dig
   - traceroute
   - tcpdump
+
+go_tools:
+  - name: wardex
+    repo: github.com/had-nu/wardex/v2
+    desc: Risk-based release gate — evaluate infra vulns with asset context + compensating controls
