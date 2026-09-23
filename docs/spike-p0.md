@@ -3,7 +3,7 @@
 **Status:** completed — **v86 selected** (D-006)
 **Date:** 2026-09-23
 **Branch:** `feat/p0-runtime-spike`
-**Relates to:** SPEC.md D-001, D-005, D-006, OQ-001, OQ-003, milestone P0
+**Relates to:** [SPEC.md](../SPEC.md) D-001, D-005, D-006, OQ-001, OQ-003, milestone P0
 
 ## Objective
 
@@ -170,5 +170,5 @@ bash scripts/dev.sh 8000       # static host
 `/bin/sh` in a Web Worker **was met and evidenced** with v86 (zero errors,
 boot ≈31 s, payload 13.7 MiB). The c2w arm could not produce a runnable
 artifact within the timebox: its v0.8.4 release pipeline has three reproducible
-upstream defects and the conversion build exceeds 30 minutes. See `SPEC.md`
+upstream defects and the conversion build exceeds 30 minutes. See [SPEC.md](../SPEC.md)
 §12 (D-006) and `docs/benchmarks.md`.

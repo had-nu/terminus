@@ -17,6 +17,9 @@ runtime/wasm/v86.wasm
 runtime/wasm/v86.d.ts
 runtime/wasm/LICENSE.v86
 
+# Spec (local only — each contributor maintains their own copy)
+docs/SPEC.md
+
 # Test evidence / local tools
 /tmp/
 *.log
