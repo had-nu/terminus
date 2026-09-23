@@ -5,8 +5,20 @@
 
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$ROOT"
+# Handle both: ./terminus.sh and curl ... | bash
+if [[ -n "${BASH_SOURCE[0]:-}" && "${BASH_SOURCE[0]}" != "${0}" ]]; then
+    # Being sourced - do nothing
+    :
+elif [[ -n "${BASH_SOURCE[0]:-}" ]]; then
+    # Executed as script file
+    ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    cd "$ROOT"
+else
+    # Piped to bash (curl ... | bash) - use temp dir
+    ROOT="$(mktemp -d)"
+    trap "rm -rf '$ROOT'" EXIT
+    cd "$ROOT"
+fi
 
 # Colors
 GREEN='\033[0;32m'
