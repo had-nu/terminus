@@ -2,7 +2,7 @@
   "name": "terminus",
   "version": "0.1.0",
   "private": true,
-  "description": "Disposable Alpine Linux environments in the browser (SPEC.md)",
+  "description": "Disposable Alpine Linux environments in the browser (docs/SPEC.md)",
   "workspaces": [
     "apps/web",
     "packages/terminal",

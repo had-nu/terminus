@@ -1,9 +1,10 @@
 # Architecture
 
-*Status: P0 snapshot — see [spike-p0.md](spike-p0.md) for measured evidence.*
+*Status: P0 snapshot — see [spike-p0.md](spike-p0.md) for measured evidence.
+For a human-readable overview, see [docs/spec/README.md](../spec/README.md).*
 
 TERMINUS runs a disposable Alpine Linux userspace in the browser. The
-architecture is deliberately small (SPEC §3):
+architecture is deliberately small ([spec §3](../SPEC.md#3-architecture)):
 
 ```
 ┌─────────────────────────────── Main thread (UI) ──────────────────────────────┐

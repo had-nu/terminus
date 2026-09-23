@@ -9,7 +9,7 @@ tab and everything is gone (SPEC §1, §2).
 > **Status: P0 spike** — runtime feasibility proven with **v86**:
 > `browser → runtime → Alpine → /bin/sh` inside a Web Worker.
 > Details: [docs/spike-p0.md](docs/spike-p0.md). The spec:
-> [SPEC.md](SPEC.md).
+> [docs/SPEC.md](docs/SPEC.md).
 
 ## Run the P0 spike
 
@@ -21,7 +21,7 @@ npm run dev          # static server on http://localhost:8000
 
 ## Repository layout
 
-Canonical tree per [SPEC.md](SPEC.md) **App. C — Target Repository Structure**.
+Canonical tree per [docs/SPEC.md](docs/SPEC.md) **App. C — Target Repository Structure**.
 As of the P0 spike, `apps/web/` and `docs/` also carry the spike files below.
 
 ``` text
@@ -78,7 +78,7 @@ terminus/
 │
 ├── package.json
 ├── README.md
-├── SPEC.md
+
 └── LICENSE
 ```
 
@@ -99,6 +99,6 @@ terminus/
 ## License
 
 **AGPL-3.0** (see [LICENSE](LICENSE); recorded as decision D-007 in
-[SPEC.md](SPEC.md)). Binaries vendored under their own licenses:
+[docs/SPEC.md](docs/SPEC.md)). Binaries vendored under their own licenses:
 v86 © copy.sh, BSD-2-Clause (`runtime/wasm/LICENSE.v86`);
 Alpine Linux © Alpine contributors, GPL-2.0 (kernel) / MIT-ish (userland).
