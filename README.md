@@ -19,16 +19,74 @@ npm run dev          # static server on http://localhost:8000
 # open http://localhost:8000/apps/web/index.html → Alpine boots to a shell
 ```
 
-## Repository layout (SPEC App. C)
+## Repository layout
 
+Canonical tree per [SPEC.md](SPEC.md) **App. C — Target Repository Structure**.
+As of the P0 spike, `apps/web/` and `docs/` also carry the spike files below.
+
+``` text
+terminus/
+│
+├── apps/
+│   └── web/
+│       └── src/
+│           ├── components/
+│           ├── terminal/
+│           ├── session/
+│           └── app/
+│
+├── runtime/
+│   ├── alpine/
+│   │   ├── rootfs/
+│   │   └── build.sh
+│   │
+│   ├── wasm/
+│   │   └── src/
+│   │
+│   └── filesystem/
+│       ├── base/
+│       └── overlay/
+│
+├── packages/
+│   ├── terminal/
+│   ├── protocol/
+│   └── session/
+│
+├── recipes/
+│   ├── network-research.yaml
+│   ├── web-security.yaml
+│   ├── malware-analysis.yaml
+│   ├── digital-forensics.yaml
+│   ├── osint.yaml
+│   └── linux-fundamentals.yaml
+│
+├── docs/
+│   ├── architecture.md
+│   ├── security.md
+│   ├── threat-model.md
+│   ├── benchmarks.md
+│   └── reproducibility.md
+│
+├── scripts/
+│   ├── build-rootfs.sh
+│   ├── build-runtime.sh
+│   └── dev.sh
+│
+├── .github/
+│   └── workflows/
+│       └── build.yml
+│
+├── package.json
+├── README.md
+├── SPEC.md
+└── LICENSE
 ```
-apps/web/        browser app (P0: vanilla spike page; P1: React + xterm.js)
-runtime/         rootfs/initramfs (alpine/) + WASM runtime (wasm/)
-packages/        terminal / protocol / session (P1+)
-recipes/         declarative environment presets (D-003)
-docs/            architecture, spike reports, benchmarks (spec-derived)
-scripts/         build-rootfs.sh · build-runtime.sh · dev.sh
-```
+
+> P0 notes: `apps/web/` currently has the vanilla spike page (`index.html`,
+> `p0-page.js`, `p0-worker.js`) until P1 (React + xterm.js); `runtime/alpine/build.sh`
+> is implemented as `scripts/build-rootfs.sh` + `scripts/build-runtime.sh`, and
+> `docs/security.md` / `docs/threat-model.md` land at P6. See
+> [docs/architecture.md](docs/architecture.md).
 
 ## Deliberate choices (recorded in SPEC Decision Log)
 
