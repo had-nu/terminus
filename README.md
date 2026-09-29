@@ -168,8 +168,8 @@ cat recipes/web-security.yaml
 |-----------|--------|
 | Browser | Firefox 108+, Chrome 108+, Safari 16.4+, Edge 108+ |
 | WASM | Sim (todos os browsers modernos) |
-| SharedArrayBuffer | ❌ **não necessário** (v86 não usa) |
-| COOP/COEP headers | ❌ **não necessário** |
+| SharedArrayBuffer | **não necessário** (v86 não usa) |
+| COOP/COEP headers | **não necessário** |
 | Memória RAM | ~300 MB livres (256 MB guest + overhead) |
 | Rede | Apenas para carregar a página inicial (depois offline) |
 
@@ -204,7 +204,7 @@ Os scripts de build são **reprodutíveis**:
 
 ```
 terminus/
-├── terminus.sh              # 🚀 Launcher único (build, dev, test, install)
+├── terminus.sh              # Launcher único (build, dev, test, install)
 ├── apps/web/                # P0: vanilla spike (index.html + worker); P1: React + xterm.js
 ├── runtime/
 │   ├── alpine/              # Kernel, initramfs, rootfs, BIOS (reconstruídos pelos scripts)
