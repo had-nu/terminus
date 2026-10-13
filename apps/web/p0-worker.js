@@ -2,8 +2,13 @@
 // TERMINUS P0 spike worker (SPEC §5: Web Worker owns the Linux runtime).
 // Loads v86 (x86 -> WASM JIT), boots Alpine kernel + session initramfs,
 // bridges serial console I/O to the main thread via postMessage.
+//
+// All runtime URLs are RELATIVE to this worker's own location (apps/web/),
+// so the same build works under any base path: localhost dev server,
+// https://<user>.github.io/terminus/, or any static host (SPEC §8.1 —
+// static hosting, no backend, no path rewrites).
 
-importScripts("/runtime/wasm/libv86.js");
+importScripts("../runtime/wasm/libv86.js");
 
 let emulator = null;
 let boot_started_at = 0;
@@ -20,12 +25,12 @@ self.onmessage = async event => {
     post({ type: "status", phase: "initializing" });
 
     emulator = new V86({
-      wasm_path: "/runtime/wasm/v86.wasm",
-      bios: { url: "/runtime/alpine/bios/seabios.bin" },
-      vga_bios: { url: "/runtime/alpine/bios/vgabios.bin" },
+      wasm_path: "../runtime/wasm/v86.wasm",
+      bios: { url: "../runtime/alpine/bios/seabios.bin" },
+      vga_bios: { url: "../runtime/alpine/bios/vgabios.bin" },
       // 32-bit Alpine kernel: v86 does not emulate x86_64 (see docs/spike-p0.md)
-      bzimage: { url: "/runtime/alpine/out/vmlinuz-lts" },
-      initrd: { url: "/runtime/alpine/out/initramfs-p0.cpio.gz" },
+      bzimage: { url: "../runtime/alpine/out/vmlinuz-lts" },
+      initrd: { url: "../runtime/alpine/out/initramfs-p0.cpio.gz" },
       cmdline: "console=ttyS0",
       memory_size: 256 * 1024 * 1024,
       fastboot: true,

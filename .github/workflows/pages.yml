@@ -1,0 +1,70 @@
+name: pages
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build rootfs + runtime (sha256-verified pins, SPEC §10.5)
+        run: |
+          npm run build:rootfs
+          npm run build:runtime
+
+      - name: Smoke test — initramfs is a valid newc cpio with an init script
+        run: |
+          gzip -dc runtime/alpine/out/initramfs-p0.cpio.gz | cpio -it | grep -qE '(^|\s)init$'
+          test -s runtime/alpine/out/vmlinuz-lts
+          test -s runtime/wasm/v86.wasm
+
+      # Assemble a self-contained static site: apps/web + runtime/ side by side,
+      # so the worker's relative URLs (../runtime/...) resolve same-origin.
+      - name: Assemble static site
+        run: |
+          mkdir -p site/apps
+          cp -r apps/web site/apps/
+          cp -r runtime site/
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=apps/web/index.html">
+            <title>TERMINUS</title>
+          </head>
+          <body>
+            <p><a href="apps/web/index.html">TERMINUS — open terminal</a></p>
+          </body>
+          </html>
+          HTML
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
